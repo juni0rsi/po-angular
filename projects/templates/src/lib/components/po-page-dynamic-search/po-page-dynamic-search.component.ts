@@ -272,7 +272,8 @@ export class PoPageDynamicSearchComponent extends PoPageDynamicSearchBaseCompone
       actions: this.actions,
       breadcrumb: this.breadcrumb,
       filters: this.filters,
-      keepFilters: this.keepFilters
+      keepFilters: this.keepFilters,
+      concatFilters: this.concatFilters
     };
 
     const pageOptionSchema: PoPageDynamicOptionsSchema<PoPageDynamicSearchOptions> = {
@@ -295,6 +296,9 @@ export class PoPageDynamicSearchComponent extends PoPageDynamicSearchBaseCompone
         },
         {
           nameProp: 'keepFilters'
+        },
+        {
+          nameProp: 'concatFilters'
         }
       ]
     };
