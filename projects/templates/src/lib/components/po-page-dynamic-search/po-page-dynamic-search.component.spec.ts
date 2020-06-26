@@ -14,7 +14,7 @@ import { expectBrowserLanguageMethod } from './../../util-test/util-expect.spec'
 
 export const routes: Routes = [];
 
-describe('PoPageDynamicSearchComponent:', () => {
+fdescribe('PoPageDynamicSearchComponent:', () => {
   let component: PoPageDynamicSearchComponent;
   let fixture: ComponentFixture<PoPageDynamicSearchComponent>;
 
@@ -299,6 +299,57 @@ describe('PoPageDynamicSearchComponent:', () => {
       expect(component.changeDisclaimers.emit).not.toHaveBeenCalledWith(disclaimers);
       expect(component['formatsFilterValuesToUpdateDisclaimers']).not.toHaveBeenCalledWith(disclaimers);
       expect(component['setFilters']).not.toHaveBeenCalledWith(formattedDisclaimersToEmitToAdvancedFilter);
+    });
+
+    it(`onChangeDisclaimerGroup: shouldn't call 'changeDisclaimers.emit' if disclaimers have been added because of quickSearch`, () => {
+      const currentDisclaimer = [{ label: 'City: Ontario', property: 'city', value: 'Ontario' }];
+      const disclaimersWithQuickFilter = [{ property: 'search', label: `Search Chicago`, value: 'Chicago' }];
+      component.filters = [{ property: 'city', initValue: 'Ontario' }];
+
+      component.literals.quickSearchLabel = 'Search';
+      component['quickFilter'] = 'Chicago';
+      component.onAction();
+
+      const disclaimersUpdated = [...currentDisclaimer, ...disclaimersWithQuickFilter];
+      spyOn(component.changeDisclaimers, 'emit');
+
+      component['onChangeDisclaimerGroup'](disclaimersUpdated);
+
+      expect(component.changeDisclaimers.emit).not.toHaveBeenCalled();
+    });
+
+    it(`onChangeDisclaimerGroup: should call 'changeDisclaimers.emit' if disclaimers have been removed`, () => {
+      const currentDisclaimer = [{ label: 'City: Ontario', property: 'city', value: 'Ontario' }];
+      const disclaimersUpdated = [...currentDisclaimer];
+      component.filters = [
+        { property: 'city', initValue: 'Ontario' },
+        { property: 'name', initValue: 'Test' }
+      ];
+
+      spyOn(component.changeDisclaimers, 'emit');
+
+      component['onChangeDisclaimerGroup'](disclaimersUpdated);
+
+      expect(component.changeDisclaimers.emit).toHaveBeenCalledWith(disclaimersUpdated);
+    });
+
+    it(`onChangeDisclaimerGroup: should call 'changeDisclaimers.emit' if quickSearch is removed`, () => {
+      const currentDisclaimer = [{ label: 'City: Ontario', property: 'city', value: 'Ontario' }];
+      const disclaimersUpdated = [...currentDisclaimer];
+      component.filters = [
+        { property: 'city', initValue: 'Ontario' },
+        { property: 'name', initValue: 'Test' }
+      ];
+
+      component.literals.quickSearchLabel = 'Search';
+      component['quickFilter'] = 'Chicago';
+      component.onAction();
+
+      spyOn(component.changeDisclaimers, 'emit');
+
+      component['onChangeDisclaimerGroup'](disclaimersUpdated);
+
+      expect(component.changeDisclaimers.emit).toHaveBeenCalledWith(disclaimersUpdated);
     });
 
     it(`disclaimersEqualsFilters: should compare the value of the disclaimers and filters and return
