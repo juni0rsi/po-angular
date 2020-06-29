@@ -243,6 +243,28 @@ export class PoPageDynamicTableComponent extends PoPageDynamicListBaseComponent 
   @Input('p-keep-filters')
   keepFilters: boolean = false;
 
+  /**
+   * @optional
+   *
+   * @description
+   *
+   * Permite a utilização da pesquisa rápida junto com a pesquisa avançada.
+   *
+   * Desta forma, ao ter uma pesquisa avançada estabelecida e ser
+   * preenchido a pesquisa rápida, o filtro será concatenado adicionando a pesquisa
+   * rápida também na lista de `disclaimers` a aplicando uma nova busca com a concatenação.
+   *
+   * Por exemplo, com os seguintes filtros aplicados:
+   *   - filtro avançado: `{ name: 'Mike', age: '12' }`
+   *   - filtro rápido: `{ search: 'paper' }`
+   *
+   * A requisição dos dados na API ficará com os parâmetros:
+   * ```
+   * page=1&pageSize=10&name=Mike&age=12&search=paper
+   * ```
+   *
+   * @default `false`
+   */
   @InputBoolean()
   @Input('p-concat-filters')
   concatFilters: boolean = false;
