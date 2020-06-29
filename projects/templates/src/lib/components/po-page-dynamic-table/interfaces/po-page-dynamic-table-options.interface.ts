@@ -43,4 +43,6 @@ export interface PoPageDynamicTableOptions {
    * Caso esse atributo seja utilizado ele sempre irá substituir o original.
    */
   keepFilters?: boolean;
+
+  concatFilters?: boolean;
 }

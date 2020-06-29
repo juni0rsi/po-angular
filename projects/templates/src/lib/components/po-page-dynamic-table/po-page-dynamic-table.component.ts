@@ -243,6 +243,10 @@ export class PoPageDynamicTableComponent extends PoPageDynamicListBaseComponent 
   @Input('p-keep-filters')
   keepFilters: boolean = false;
 
+  @InputBoolean()
+  @Input('p-concat-filters')
+  concatFilters: boolean = false;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -282,9 +286,11 @@ export class PoPageDynamicTableComponent extends PoPageDynamicListBaseComponent 
     this.onAdvancedSearch(filter);
   }
 
-  onQuickSearch(filter) {
-    this.subscriptions.add(this.loadData(filter ? { page: 1, search: filter } : undefined).subscribe());
-    this.params = filter ? { search: filter } : {};
+  onQuickSearch(termTypedInQuickSearch) {
+    const quickSearchParam = termTypedInQuickSearch ? { search: termTypedInQuickSearch } : {};
+    this.params = this.concatFilters ? { ...this.params, ...quickSearchParam } : { ...quickSearchParam };
+
+    this.subscriptions.add(this.loadData(termTypedInQuickSearch ? { page: 1, ...this.params } : undefined).subscribe());
   }
 
   onSort(sortedColumn: PoTableColumnSort) {
@@ -804,7 +810,8 @@ export class PoPageDynamicTableComponent extends PoPageDynamicListBaseComponent 
       actions: this.actions,
       breadcrumb: this.breadcrumb,
       title: this.title,
-      keepFilters: this.keepFilters
+      keepFilters: this.keepFilters,
+      concatFilters: this.concatFilters
     };
 
     const pageOptionSchema: PoPageDynamicOptionsSchema<PoPageDynamicTableOptions> = {
@@ -826,6 +833,9 @@ export class PoPageDynamicTableComponent extends PoPageDynamicListBaseComponent 
         },
         {
           nameProp: 'keepFilters'
+        },
+        {
+          nameProp: 'concatFilters'
         }
       ]
     };
